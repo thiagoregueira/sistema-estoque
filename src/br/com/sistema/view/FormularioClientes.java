@@ -308,14 +308,19 @@ public class FormularioClientes extends javax.swing.JFrame {
 
         painel_guias.addTab("Consultar Clientes", painel_consulta);
 
+        btnNovo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/add1.png"))); // NOI18N
         btnNovo.setText("NOVO");
 
+        btnSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/salvar.png"))); // NOI18N
         btnSalvar.setText("SALVAR");
 
+        btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/editar.png"))); // NOI18N
         btnEditar.setText("EDITAR");
 
+        btnExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/excluir.png"))); // NOI18N
         btnExcluir.setText("EXCLUIR");
 
+        btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/printer.png"))); // NOI18N
         btnImprimir.setText("IMPRIMIR");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -352,7 +357,7 @@ public class FormularioClientes extends javax.swing.JFrame {
                     .addComponent(btnEditar)
                     .addComponent(btnExcluir)
                     .addComponent(btnImprimir))
-                .addGap(0, 22, Short.MAX_VALUE))
+                .addGap(0, 2, Short.MAX_VALUE))
         );
 
         pack();
