@@ -4,6 +4,9 @@
  */
 package br.com.sistema.view;
 
+import br.com.sistema.dao.ClientesDao;
+import br.com.sistema.model.Clientes;
+
 /**
  *
  * @author thiag
@@ -135,7 +138,7 @@ public class FormularioClientes extends javax.swing.JFrame {
 
         jLabel12.setText("Complemento:");
 
-        cbUF.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbUF.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" }));
 
         jLabel13.setText("RG:");
 
@@ -198,7 +201,7 @@ public class FormularioClientes extends javax.swing.JFrame {
                                             .addGap(18, 18, 18)
                                             .addComponent(txtNumero)))
                                     .addGap(18, 18, 18)
-                                    .addComponent(cbUF, 0, 1, Short.MAX_VALUE))
+                                    .addComponent(cbUF, 0, 60, Short.MAX_VALUE))
                                 .addGroup(painel_dados_pessoaisLayout.createSequentialGroup()
                                     .addComponent(txtEmail)
                                     .addGap(18, 18, 18)
@@ -213,7 +216,7 @@ public class FormularioClientes extends javax.swing.JFrame {
                                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 588, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(18, 18, 18)
                                     .addComponent(btnPesquisar))))))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         painel_dados_pessoaisLayout.setVerticalGroup(
             painel_dados_pessoaisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -291,7 +294,7 @@ public class FormularioClientes extends javax.swing.JFrame {
                 .addComponent(txtPesquisaNome, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnPesquisaNome)
-                .addContainerGap(304, Short.MAX_VALUE))
+                .addContainerGap(382, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         painel_consultaLayout.setVerticalGroup(
@@ -313,6 +316,11 @@ public class FormularioClientes extends javax.swing.JFrame {
 
         btnSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/salvar.png"))); // NOI18N
         btnSalvar.setText("SALVAR");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
 
         btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/editar.png"))); // NOI18N
         btnEditar.setText("EDITAR");
@@ -329,9 +337,6 @@ public class FormularioClientes extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(painel_guias, javax.swing.GroupLayout.PREFERRED_SIZE, 762, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 78, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGap(46, 46, 46)
                 .addComponent(btnNovo)
                 .addGap(18, 18, 18)
@@ -343,6 +348,7 @@ public class FormularioClientes extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnImprimir)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(painel_guias, javax.swing.GroupLayout.DEFAULT_SIZE, 840, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -362,6 +368,27 @@ public class FormularioClientes extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        Clientes obj = new Clientes();
+        obj.setNome(txtNome.getText());
+        obj.setRg(txtRg.getText());
+        obj.setCpf(txtCpf.getText());
+        obj.setEmail(txtEmail.getText());
+        obj.setTelefone(txtTelefone.getText());
+        obj.setCelular(txtCelular.getText());
+        obj.setCep(txtCep.getText());
+        obj.setEndereco(txtEndereco.getText());
+        obj.setNumero(Integer.parseInt(txtNumero.getText()));
+        obj.setComplemento(txtComplemento.getText());
+        obj.setBairro(txtBairro.getText());
+        obj.setCidade(txtCidade.getText());
+        obj.setEstado(cbUF.getSelectedItem().toString());
+        
+        ClientesDao dao = new ClientesDao();
+        dao.salvar(obj);
+        
+    }//GEN-LAST:event_btnSalvarActionPerformed
 
     /**
      * @param args the command line arguments
