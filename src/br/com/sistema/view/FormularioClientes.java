@@ -6,6 +6,11 @@ package br.com.sistema.view;
 
 import br.com.sistema.dao.ClientesDao;
 import br.com.sistema.model.Clientes;
+import br.com.sistema.utilitarios.Utilitarios;
+import java.awt.event.KeyEvent;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -16,6 +21,32 @@ public class FormularioClientes extends javax.swing.JFrame {
     /**
      * Creates new form FormularioClientes
      */
+    
+    public void listar(){
+        ClientesDao dao = new ClientesDao();
+        List<Clientes> lista = dao.listar();
+        DefaultTableModel dados = (DefaultTableModel) tabela.getModel();
+        dados.setNumRows(0);
+        for (Clientes c : lista){
+            dados.addRow(new Object[]{
+                c.getId(),
+                c.getNome(),
+                c.getRg(),
+                c.getCpf(),
+                c.getEmail(),
+                c.getTelefone(),
+                c.getCelular(),
+                c.getCep(),
+                c.getEndereco(),
+                c.getNumero(),
+                c.getComplemento(),
+                c.getBairro(),
+                c.getCidade(),
+                c.getEstado(),
+            });
+        }
+    }
+    
     public FormularioClientes() {
         initComponents();
     }
@@ -66,7 +97,7 @@ public class FormularioClientes extends javax.swing.JFrame {
         txtPesquisaNome = new javax.swing.JTextField();
         btnPesquisaNome = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tabela_clientes = new javax.swing.JTable();
+        tabela = new javax.swing.JTable();
         btnNovo = new javax.swing.JButton();
         btnSalvar = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
@@ -74,6 +105,12 @@ public class FormularioClientes extends javax.swing.JFrame {
         btnImprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -98,9 +135,22 @@ public class FormularioClientes extends javax.swing.JFrame {
 
         jLabel2.setText("Código:");
 
+        txtCodigo.setEditable(false);
+
         jLabel3.setText("Nome:");
 
+        txtNome.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtNomeKeyPressed(evt);
+            }
+        });
+
         btnPesquisar.setText("Pesquisar");
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("E-mail:");
 
@@ -261,16 +311,27 @@ public class FormularioClientes extends javax.swing.JFrame {
                     .addComponent(txtRg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel14)
                     .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(80, Short.MAX_VALUE))
         );
 
         painel_guias.addTab("Dados Pessoais", painel_dados_pessoais);
 
         jLabel15.setText("Nome:");
 
-        btnPesquisaNome.setText("Pesquisar");
+        txtPesquisaNome.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisaNomeKeyReleased(evt);
+            }
+        });
 
-        tabela_clientes.setModel(new javax.swing.table.DefaultTableModel(
+        btnPesquisaNome.setText("Pesquisar");
+        btnPesquisaNome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisaNomeActionPerformed(evt);
+            }
+        });
+
+        tabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null, null, null, null, null, null, null},
@@ -278,10 +339,15 @@ public class FormularioClientes extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "id", "nome", "e-mail", "celular", "telefone", "cep", "endereco", "numero", "bairro", "cidade", "complemento", "UF", "RG", "CPF"
+                "id", "nome", "RG", "CPF", "e-mail", "telefone", "celular", "cep", "endereco", "numero", "complemento", "bairro", "cidade", "UF"
             }
         ));
-        jScrollPane1.setViewportView(tabela_clientes);
+        tabela.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabela);
 
         javax.swing.GroupLayout painel_consultaLayout = new javax.swing.GroupLayout(painel_consulta);
         painel_consulta.setLayout(painel_consultaLayout);
@@ -306,13 +372,18 @@ public class FormularioClientes extends javax.swing.JFrame {
                     .addComponent(txtPesquisaNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPesquisaNome))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
         );
 
         painel_guias.addTab("Consultar Clientes", painel_consulta);
 
         btnNovo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/add1.png"))); // NOI18N
         btnNovo.setText("NOVO");
+        btnNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovoActionPerformed(evt);
+            }
+        });
 
         btnSalvar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/salvar.png"))); // NOI18N
         btnSalvar.setText("SALVAR");
@@ -348,14 +419,14 @@ public class FormularioClientes extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnImprimir)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(painel_guias, javax.swing.GroupLayout.DEFAULT_SIZE, 840, Short.MAX_VALUE)
+            .addComponent(painel_guias)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(painel_guias, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(painel_guias, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNovo)
@@ -363,10 +434,11 @@ public class FormularioClientes extends javax.swing.JFrame {
                     .addComponent(btnEditar)
                     .addComponent(btnExcluir)
                     .addComponent(btnImprimir))
-                .addGap(0, 2, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
@@ -387,8 +459,144 @@ public class FormularioClientes extends javax.swing.JFrame {
         
         ClientesDao dao = new ClientesDao();
         dao.salvar(obj);
+        Utilitarios util = new Utilitarios();
+        util.limpaTela(painel_dados_pessoais);
         
     }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
+        String nome = txtNome.getText();
+        Clientes obj = new Clientes();
+        ClientesDao dao = new ClientesDao();
+        
+        obj = dao.buscarCliente(nome);
+        if (obj.getNome() != null){
+            txtCodigo.setText(String.valueOf(obj.getId()));
+            txtNome.setText(obj.getNome());
+            txtRg.setText(obj.getRg());
+            txtCpf.setText(obj.getCpf());
+            txtEmail.setText(obj.getEmail());
+            txtTelefone.setText(obj.getTelefone());
+            txtCelular.setText(obj.getCelular());
+            txtCep.setText(obj.getCep());
+            txtEndereco.setText(obj.getEndereco());
+            txtNumero.setText(String.valueOf(obj.getNumero()));
+            txtComplemento.setText(obj.getComplemento());
+            txtBairro.setText(obj.getBairro());
+            txtCidade.setText(obj.getCidade());
+            cbUF.setSelectedItem(obj.getEstado());
+        } else {
+            JOptionPane.showMessageDialog(null, "Cliente não encontrado");
+        }
+    }//GEN-LAST:event_btnPesquisarActionPerformed
+
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+        Utilitarios util = new Utilitarios();
+        util.limpaTela(painel_dados_pessoais);
+    }//GEN-LAST:event_btnNovoActionPerformed
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        listar();
+    }//GEN-LAST:event_formWindowActivated
+
+    private void btnPesquisaNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisaNomeActionPerformed
+        String nome = "%" + txtPesquisaNome.getText() + "%";
+        ClientesDao dao = new ClientesDao();
+        List<Clientes> lista = dao.filtrar(nome);
+        DefaultTableModel dados = (DefaultTableModel) tabela.getModel();
+        dados.setNumRows(0);
+        for (Clientes c : lista){
+            dados.addRow(new Object[]{
+                c.getId(),
+                c.getNome(),
+                c.getRg(),
+                c.getCpf(),
+                c.getEmail(),
+                c.getTelefone(),
+                c.getCelular(),
+                c.getCep(),
+                c.getEndereco(),
+                c.getNumero(),
+                c.getComplemento(),
+                c.getBairro(),
+                c.getCidade(),
+                c.getEstado(),
+            });
+        }
+    }//GEN-LAST:event_btnPesquisaNomeActionPerformed
+
+    private void txtPesquisaNomeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaNomeKeyReleased
+         String nome = "%" + txtPesquisaNome.getText() + "%";
+        ClientesDao dao = new ClientesDao();
+        List<Clientes> lista = dao.filtrar(nome);
+        DefaultTableModel dados = (DefaultTableModel) tabela.getModel();
+        dados.setNumRows(0);
+        for (Clientes c : lista){
+            dados.addRow(new Object[]{
+                c.getId(),
+                c.getNome(),
+                c.getRg(),
+                c.getCpf(),
+                c.getEmail(),
+                c.getTelefone(),
+                c.getCelular(),
+                c.getCep(),
+                c.getEndereco(),
+                c.getNumero(),
+                c.getComplemento(),
+                c.getBairro(),
+                c.getCidade(),
+                c.getEstado(),
+            });
+        }
+    }//GEN-LAST:event_txtPesquisaNomeKeyReleased
+
+    private void txtNomeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNomeKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            String nome = txtNome.getText();
+            Clientes obj = new Clientes();
+            ClientesDao dao = new ClientesDao();
+        
+            obj = dao.buscarCliente(nome);
+            if (obj.getNome() != null){
+                txtCodigo.setText(String.valueOf(obj.getId()));
+                txtNome.setText(obj.getNome());
+                txtRg.setText(obj.getRg());
+                txtCpf.setText(obj.getCpf());
+                txtEmail.setText(obj.getEmail());
+                txtTelefone.setText(obj.getTelefone());
+                txtCelular.setText(obj.getCelular());
+                txtCep.setText(obj.getCep());
+                txtEndereco.setText(obj.getEndereco());
+                txtNumero.setText(String.valueOf(obj.getNumero()));
+                txtComplemento.setText(obj.getComplemento());
+                txtBairro.setText(obj.getBairro());
+                txtCidade.setText(obj.getCidade());
+                cbUF.setSelectedItem(obj.getEstado());
+            } else {
+            JOptionPane.showMessageDialog(null, "Cliente não encontrado");
+        }
+            
+        }
+    }//GEN-LAST:event_txtNomeKeyPressed
+
+    private void tabelaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaMouseClicked
+        painel_guias.setSelectedIndex(0);
+        txtCodigo.setText(tabela.getValueAt(tabela.getSelectedRow(), 0).toString());
+        txtNome.setText(tabela.getValueAt(tabela.getSelectedRow(), 1).toString());
+        txtRg.setText(tabela.getValueAt(tabela.getSelectedRow(), 2).toString());
+        txtCpf.setText(tabela.getValueAt(tabela.getSelectedRow(), 3).toString());
+        txtEmail.setText(tabela.getValueAt(tabela.getSelectedRow(), 4).toString());
+        txtTelefone.setText(tabela.getValueAt(tabela.getSelectedRow(), 5).toString());
+        txtCelular.setText(tabela.getValueAt(tabela.getSelectedRow(), 6).toString());
+        txtCep.setText(tabela.getValueAt(tabela.getSelectedRow(), 7).toString());
+        txtEndereco.setText(tabela.getValueAt(tabela.getSelectedRow(), 8).toString());
+        txtNumero.setText(tabela.getValueAt(tabela.getSelectedRow(), 9).toString());
+        txtComplemento.setText(tabela.getValueAt(tabela.getSelectedRow(), 10).toString());
+        txtBairro.setText(tabela.getValueAt(tabela.getSelectedRow(), 11).toString());
+        txtCidade.setText(tabela.getValueAt(tabela.getSelectedRow(), 12).toString());
+        cbUF.setSelectedItem(tabela.getValueAt(tabela.getSelectedRow(), 13).toString());
+    }//GEN-LAST:event_tabelaMouseClicked
 
     /**
      * @param args the command line arguments
@@ -454,7 +662,7 @@ public class FormularioClientes extends javax.swing.JFrame {
     private javax.swing.JPanel painel_consulta;
     private javax.swing.JPanel painel_dados_pessoais;
     private javax.swing.JTabbedPane painel_guias;
-    private javax.swing.JTable tabela_clientes;
+    private javax.swing.JTable tabela;
     private javax.swing.JTextField txtBairro;
     private javax.swing.JFormattedTextField txtCelular;
     private javax.swing.JFormattedTextField txtCep;
