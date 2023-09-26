@@ -104,7 +104,8 @@ public class FormularioClientes extends javax.swing.JFrame {
         btnExcluir = new javax.swing.JButton();
         btnImprimir = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Formulário de Clientes");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
@@ -395,9 +396,19 @@ public class FormularioClientes extends javax.swing.JFrame {
 
         btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/editar.png"))); // NOI18N
         btnEditar.setText("EDITAR");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/excluir.png"))); // NOI18N
         btnExcluir.setText("EXCLUIR");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         btnImprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/sistema/imagens/printer.png"))); // NOI18N
         btnImprimir.setText("IMPRIMIR");
@@ -597,6 +608,40 @@ public class FormularioClientes extends javax.swing.JFrame {
         txtCidade.setText(tabela.getValueAt(tabela.getSelectedRow(), 12).toString());
         cbUF.setSelectedItem(tabela.getValueAt(tabela.getSelectedRow(), 13).toString());
     }//GEN-LAST:event_tabelaMouseClicked
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        Clientes obj = new Clientes();
+        obj.setNome(txtNome.getText());
+        obj.setRg(txtRg.getText());
+        obj.setCpf(txtCpf.getText());
+        obj.setEmail(txtEmail.getText());
+        obj.setTelefone(txtTelefone.getText());
+        obj.setCelular(txtCelular.getText());
+        obj.setCep(txtCep.getText());
+        obj.setEndereco(txtEndereco.getText());
+        obj.setNumero(Integer.parseInt(txtNumero.getText()));
+        obj.setComplemento(txtComplemento.getText());
+        obj.setBairro(txtBairro.getText());
+        obj.setCidade(txtCidade.getText());
+        obj.setEstado(cbUF.getSelectedItem().toString());
+        obj.setId(Integer.parseInt(txtCodigo.getText()));
+        
+        ClientesDao dao = new ClientesDao();
+        dao.editar(obj);
+        Utilitarios util = new Utilitarios();
+        util.limpaTela(painel_dados_pessoais);
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        Clientes obj = new Clientes();
+        obj.setId(Integer.parseInt(txtCodigo.getText()));
+        ClientesDao dao = new ClientesDao();
+        dao.excluir(obj);
+        Utilitarios util = new Utilitarios();
+        util.limpaTela(painel_dados_pessoais);
+        
+                
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     /**
      * @param args the command line arguments

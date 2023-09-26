@@ -150,4 +150,47 @@ public class ClientesDao {
         }
         return null;
     }
+     
+     public void editar(Clientes obj){
+        try {
+            // 1º criar o SQL
+            String sql = "UPDATE tb_clientes SET nome = ?, rg = ?, cpf = ?, email = ?, telefone = ?, celular = ?, cep = ?, endereco = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, estado = ? WHERE id = ?";
+            // 2º preparar a conexão SQL
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, obj.getNome());
+            stmt.setString(2, obj.getRg());
+            stmt.setString(3, obj.getCpf());
+            stmt.setString(4, obj.getEmail());
+            stmt.setString(5, obj.getTelefone());
+            stmt.setString(6, obj.getCelular());
+            stmt.setString(7, obj.getCep());
+            stmt.setString(8, obj.getEndereco());
+            stmt.setInt(9, obj.getNumero());
+            stmt.setString(10, obj.getComplemento());
+            stmt.setString(11, obj.getBairro());
+            stmt.setString(12, obj.getCidade());
+            stmt.setString(13, obj.getEstado());
+            stmt.setInt(14, obj.getId());
+            // 3º executar SQL
+            stmt.execute();
+            // 4º fechar a conexão
+            stmt.close();
+            JOptionPane.showMessageDialog(null, "Cliente editado com sucesso!");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "erro ao editar cliente " + e);
+        }
+    }
+     
+     public void excluir(Clientes obj){
+         try {
+             String sql = "DELETE FROM tb_clientes WHERE id = ?";
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             stmt.setInt(1, obj.getId());
+             stmt.execute();
+             stmt.close();
+             JOptionPane.showMessageDialog(null, "Cliente excluído com sucesso! ");
+         } catch (SQLException e) {
+             JOptionPane.showMessageDialog(null, "Erro ao excluir o cliente " + e);
+         }
+     }
 }
