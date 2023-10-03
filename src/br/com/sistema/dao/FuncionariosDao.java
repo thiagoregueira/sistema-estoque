@@ -5,6 +5,8 @@
 package br.com.sistema.dao;
 import br.com.sistema.jdbc.ConexaoBanco;
 import br.com.sistema.model.Funcionarios;
+import br.com.sistema.view.AreaTrabalho;
+import br.com.sistema.view.FormularioLogin;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -206,6 +208,28 @@ public class FuncionariosDao {
              JOptionPane.showMessageDialog(null, "Funcionário excluído com sucesso! ");
          } catch (SQLException e) {
              JOptionPane.showMessageDialog(null, "Erro ao excluir o Funcionário " + e);
+         }
+     }
+     
+     public void efetuarLogin(String email, String senha){
+         try {
+             String sql = "SELECT * FROM tb_funcionarios WHERE email = ? and senha = ?";
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             stmt.setString(1, email);
+             stmt.setString(2, senha);
+             
+             ResultSet rs = stmt.executeQuery();
+             if (rs.next()){
+                 JOptionPane.showMessageDialog(null, "Seja bem vindo ao sistema!");
+                 AreaTrabalho at = new AreaTrabalho();
+                 at.setVisible(true);
+             } else {
+                 FormularioLogin login = new FormularioLogin();
+                 JOptionPane.showMessageDialog(null, "Dados inválidos");
+                 login.setVisible(true);
+             }
+         } catch (SQLException e) {
+             JOptionPane.showMessageDialog(null, "erro: " + e);
          }
      }
 }
