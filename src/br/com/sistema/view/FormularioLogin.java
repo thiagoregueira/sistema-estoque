@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
  *
  * @author thiag
  */
+@SuppressWarnings("serial")
 public class FormularioLogin extends javax.swing.JFrame {
 
     /**
