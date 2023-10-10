@@ -161,4 +161,32 @@ public class ProdutosDao {
              JOptionPane.showMessageDialog(null, "Erro ao excluir o Produto " + e);
          }
      }
+     
+     public void adicionarEstoque(int id, int qtd_nova){
+         try {
+             String sql = "UPDATE tb_produtos SET qtd_estoque = ? WHERE id = ?";
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             stmt.setInt(1, qtd_nova);
+             stmt.setInt(2, id);
+             stmt.execute();
+             stmt.close();
+             JOptionPane.showMessageDialog(null, "Adicionado com sucesso ao estoque");
+         } catch (Exception e) {
+             JOptionPane.showMessageDialog(null, "erro ao adicionar ao estoque" + e);
+         }
+     }
+     
+     public void baixaEstoque(int id, int qtd_nova){
+         try {
+             String sql = "UPDATE tb_produtos SET qtd_estoque = ? WHERE id = ?";
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             stmt.setInt(1, qtd_nova);
+             stmt.setInt(2, id);
+             stmt.execute();
+             stmt.close();
+             JOptionPane.showMessageDialog(null, "baixa no estoque efetuada com sucesso!");
+         } catch (Exception e) {
+             JOptionPane.showMessageDialog(null, "erro ao dar baixa no estoque" + e);
+         }
+     }
 }
