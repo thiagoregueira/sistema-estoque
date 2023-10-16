@@ -73,6 +73,31 @@ public class ProdutosDao {
         return null;
     }
     
+    public Produtos buscarProdutoCodigo(int id){
+        try {
+            String sql = "SELECT p.id, p.descricao, p.preco, p.qtd_estoque, f.nome FROM tb_produtos AS p INNER JOIN tb_fornecedores AS f ON(p.for_id = f.id) WHERE p.id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            Produtos obj = new Produtos();
+            Fornecedores f = new Fornecedores();
+            if (rs.next()){
+                obj.setId(rs.getInt("p.id"));
+                obj.setDescricao(rs.getString("p.descricao"));
+                obj.setPreco(rs.getDouble("p.preco"));
+                obj.setQtd_estoque(rs.getInt("p.qtd_estoque"));
+                
+                f.setNome(rs.getString("f.nome"));
+                obj.setFornecedores(f);
+
+            }
+            return obj;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao buscar Produto " + e);
+        }
+        return null;
+    }
+    
     public List<Produtos> listar (){
         List<Produtos> lista = new ArrayList<>();
         try {

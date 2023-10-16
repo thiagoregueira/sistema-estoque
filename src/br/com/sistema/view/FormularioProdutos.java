@@ -117,6 +117,11 @@ public class FormularioProdutos extends javax.swing.JFrame {
 
         jLabel3.setText("Descrição:");
 
+        txtDescricao.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                txtDescricaoMousePressed(evt);
+            }
+        });
         txtDescricao.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtDescricaoKeyPressed(evt);
@@ -422,7 +427,7 @@ public class FormularioProdutos extends javax.swing.JFrame {
                 p.getDescricao(),
                 p.getPreco(),
                 p.getQtd_estoque(),
-                p.getFornecedores().getId()
+                p.getFornecedores().getNome()
 
             });
         }
@@ -440,7 +445,7 @@ public class FormularioProdutos extends javax.swing.JFrame {
                 p.getDescricao(),
                 p.getPreco(),
                 p.getQtd_estoque(),
-                p.getFornecedores().getId()
+                p.getFornecedores().getNome()
 
             });
         }
@@ -534,6 +539,10 @@ public class FormularioProdutos extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPesquisaDescricaoActionPerformed
 
+    private void txtDescricaoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtDescricaoMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDescricaoMousePressed
+
     /**
      * @param args the command line arguments
      */
@@ -590,7 +599,7 @@ public class FormularioProdutos extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel painel_consulta;
     private javax.swing.JPanel painel_dados_pessoais;
-    private javax.swing.JTabbedPane painel_guias;
+    public javax.swing.JTabbedPane painel_guias;
     private javax.swing.JTable tabela;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtDescricao;
