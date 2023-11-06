@@ -4,8 +4,16 @@
  */
 package br.com.sistema.view;
 
+import br.com.sistema.dao.ItensVendasDao;
+import br.com.sistema.dao.ProdutosDao;
+import br.com.sistema.dao.VendasDao;
 import br.com.sistema.model.Clientes;
 import br.com.sistema.model.ItensVendas;
+import br.com.sistema.model.Produtos;
+import br.com.sistema.model.Vendas;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -21,6 +29,10 @@ public class FormularioPagamentos extends javax.swing.JFrame {
      */
     public FormularioPagamentos() {
         initComponents();
+        
+        txtDinheiro.setText("0");
+        txtCartao.setText("0");
+        txtCheque.setText("0");
     }
 
     /**
@@ -47,6 +59,7 @@ public class FormularioPagamentos extends javax.swing.JFrame {
         txtTotal = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtObs = new javax.swing.JTextArea();
+        btnPagar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Pagamentos");
@@ -84,17 +97,24 @@ public class FormularioPagamentos extends javax.swing.JFrame {
 
         jLabel7.setText("Observações:");
 
+        txtDinheiro.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtDinheiro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDinheiroActionPerformed(evt);
             }
         });
 
+        txtCartao.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCartao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtCartaoActionPerformed(evt);
             }
         });
+
+        txtCheque.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        txtTroco.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtTroco.setEnabled(false);
 
         txtTotal.setEnabled(false);
         txtTotal.addActionListener(new java.awt.event.ActionListener() {
@@ -106,6 +126,13 @@ public class FormularioPagamentos extends javax.swing.JFrame {
         txtObs.setColumns(20);
         txtObs.setRows(5);
         jScrollPane1.setViewportView(txtObs);
+
+        btnPagar.setText("PAGAR");
+        btnPagar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPagarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -127,10 +154,15 @@ public class FormularioPagamentos extends javax.swing.JFrame {
                     .addComponent(txtCheque, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
                     .addComponent(txtTroco)
                     .addComponent(txtTotal))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(47, 47, 47)
+                        .addComponent(btnPagar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -160,9 +192,13 @@ public class FormularioPagamentos extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 32, Short.MAX_VALUE))
+                            .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnPagar, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)))
+                .addGap(6, 6, 6))
         );
 
         pack();
@@ -180,6 +216,63 @@ public class FormularioPagamentos extends javax.swing.JFrame {
     private void txtTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTotalActionPerformed
+
+    private void btnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarActionPerformed
+        double dinheiro, cartao, cheque, totalVenda, troco, totalPago;
+        
+        dinheiro = Double.valueOf(txtDinheiro.getText());
+        cartao = Double.valueOf(txtCartao.getText());
+        cheque = Double.valueOf(txtCheque.getText());
+        totalVenda = Double.valueOf(txtTotal.getText());
+        totalPago = dinheiro + cartao + cheque;
+        troco = totalPago - totalVenda;
+        
+        txtTroco.setText(String.valueOf(troco));
+        
+        if (totalPago >= totalVenda) {
+            Vendas v = new Vendas();
+            v.setClientes(clientes);
+            Date agora = new Date();
+            SimpleDateFormat dataEUA = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dataMySql = dataEUA.format(agora);
+            v.setData_venda(dataMySql);
+            v.setTotal_venda(totalVenda);
+            v.setObservacoes(txtObs.getText());
+            
+            VendasDao vd = new VendasDao();
+            vd.salvar(v);
+            v.setId(vd.retornaUltimoIdVenda());
+            
+            JOptionPane.showMessageDialog(null,"ID da última venda!" + v.getId());
+            
+            for (int i = 0; i < meus_produtos.getRowCount(); i++) {
+                int qtd_estoque, qtd_comprada, qtd_atualizada;
+                Produtos p = new Produtos();
+                ProdutosDao pd = new ProdutosDao();
+                ItensVendas item = new ItensVendas();
+                item.setVendas(v);
+                p.setId(Integer.parseInt(meus_produtos.getValueAt(i,
+                        0).toString()));
+                item.setProdutos(p);
+                item.setQtd(Integer.parseInt(meus_produtos.getValueAt(i,
+                        2).toString()));
+                item.setSubtotal(Double.parseDouble(meus_produtos.getValueAt(i,
+                        4).toString()));
+                qtd_estoque = pd.retornaQtdAtualEstoque(p.getId());
+                qtd_comprada = Integer.parseInt(meus_produtos.getValueAt(i,
+                        2).toString());
+                qtd_atualizada = qtd_estoque - qtd_comprada;
+                pd.baixaEstoque(p.getId(), qtd_atualizada);
+                
+                ItensVendasDao ivd = new ItensVendasDao();
+                ivd.salvar(item);
+                
+            }
+                    
+        } else {
+            JOptionPane.showMessageDialog(null, "Não foi possível fazer a venda! O valor pago é menor que o valor da venda");
+        }
+    }//GEN-LAST:event_btnPagarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -217,6 +310,7 @@ public class FormularioPagamentos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnPagar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -214,4 +214,20 @@ public class ProdutosDao {
              JOptionPane.showMessageDialog(null, "erro ao dar baixa no estoque" + e);
          }
      }
+     
+     public int retornaQtdAtualEstoque(int id){
+         try {
+             int qtd_atual_estoque = 0;
+             String sql = "SELECT qtd_estoque FROM tb_produtos WHERE id=?";
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             stmt.setInt(1, id);
+             ResultSet rs = stmt.executeQuery();
+             if(rs.next()){
+                 qtd_atual_estoque = (rs.getInt("qtd_estoque"));
+             }
+             return qtd_atual_estoque;
+         } catch (SQLException e) {
+             throw new RuntimeException("Erro ao retornar a quantidade atual do estoque" + e);
+         }
+     }
 }
